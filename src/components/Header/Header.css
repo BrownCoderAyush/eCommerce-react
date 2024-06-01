@@ -1,4 +1,8 @@
 #title{
-    letter-spacing: 5px;
+    letter-spacing: 10px;
     
+}
+#title a{
+    text-decoration: none;
+    color: black;
 }
