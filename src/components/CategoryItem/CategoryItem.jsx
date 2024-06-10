@@ -1,11 +1,13 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-function CategoryItem({categoryName}) {
+function CategoryItem({categoryName , filter=''}) {
 
+    const redirectLink = `/products?category=${filter}`;
 
     return (
         <div className="category-item d-flex align-items-center justify-content-center">
-            <Link to="/products">{categoryName}</Link>
+            <Link to={redirectLink}>{categoryName}</Link>
         </div>
     )
 }

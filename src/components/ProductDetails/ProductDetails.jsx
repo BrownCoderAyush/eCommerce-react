@@ -1,18 +1,34 @@
+import { useParams } from 'react-router-dom';
 import './ProductDetails.css';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function ProductDetails(){
+    const { id } = useParams();
+    const [product,setProduct] = useState(null);
+
+    async function downloadProduct(){
+        const response = await axios.get(`https://fakestoreapi.com/products/${id}`);
+        console.log(response.data);
+        setProduct(response.data);
+    }
+    useEffect(()=>{
+        downloadProduct();
+    },[]);
+
     return (
+
         <div className="container">
             <div className="row">
                 <div className="product-details-wrapper d-flex justify-content-between align-items-start flex-row">
                     <div className="product-img d-flex">
-                        <img src="https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg" alt="product image" id="product-img"/>
+                        <img src="" alt="product image" id="product-img"/>
                     </div>
 
                     <div className="product-details-box d-flex flex-column">
                         <div id="productDetails">
                             {/* <!-- product details --> */}
-                            <div className="product-name" id="product-name">Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops</div>
+                            <div className="product-name" id="product-name"></div>
                             <div className="product-price fw-bold" id="product-price">109.95</div>
                             <div className="product-description">
                                 <div className="product-description-title fw-bold">Description</div>

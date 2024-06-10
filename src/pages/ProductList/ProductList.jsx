@@ -1,26 +1,50 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+
 import ProductBox from '../../components/ProductBox/ProductBox';
 import FilterProducts from '../../components/FilterProducts/FilterProducts';
+import { getAllProducts, getAllProductsByCategory } from '../../APIs/fakeStoreProdApis';
+import { useSearchParams } from 'react-router-dom';
 
 import './ProductList.css';
 
-import ProductImage from '../../assets/product.jpg';
-
 function ProductList() {
+    const [products, setProducts] = useState([]);
+    const [searchParams,setSearchParams] = useSearchParams();
+
+    async function downloadAllProducts(category) {
+        const downloadURL = (category=='')?
+        getAllProducts():
+        getAllProductsByCategory(category);
+
+        const products = await axios.get(downloadURL);
+        setProducts(products.data);
+    }
+
+    useEffect(() => {
+        const category = searchParams.get('category');
+        downloadAllProducts(category);
+    },[searchParams.get('category')])
+
     return (
         <div className="container">
             <div className="row">
                 <h2 className='product-list-title text-center'>All Products</h2>
-                
+
                 {/* list of products */}
                 <div className="product-list-wrapper d-flex flex-row">
 
-                    <FilterProducts/>
+                    <FilterProducts />
                     <div className="product-list-box" id="productList">
-                        <ProductBox 
-                            productImage={ProductImage}
-                            name={"Dummy"}
-                            price={100}
-                        />
+                        {products.map((product, index) => 
+                            <ProductBox
+                            productImage={product.image}
+                            name={product.title}
+                            price={product.price}
+                            productId = {product.id}
+                            key={index}
+                        />)}
                     </div>
                 </div>
 
