@@ -16,3 +16,7 @@ export function getProductDetailsById(id){
 export function signUp(id){
     return `${import.meta.env.VITE_FAKE_STORE_URL}/users`;
 }
+
+export function sigin() {
+    return `${import.meta.env.VITE_FAKE_STORE_URL}/auth/login`;
+}
