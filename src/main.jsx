@@ -6,6 +6,7 @@ import './index.css'
 import { BrowserRouter } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <CookiesProvider defaultSetOptions={{ path: '/' }}>

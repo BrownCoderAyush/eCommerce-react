@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Collapse,
   Navbar,
@@ -16,16 +16,27 @@ import { Link } from 'react-router-dom';
 // css imports 
 import './Header.css';
 import { useCookies } from 'react-cookie';
+import UserContext from '../../context/UserContext';
+import { jwtDecode } from 'jwt-decode';
+import CartContext from '../../context/CartContext';
+
 
 function Header(args) {
   const [isOpen, setIsOpen] = useState(false);
   const [token,setToken,removeToken] = useCookies(['jwt-token']);
-
+  const {user,setUser} = useContext(UserContext);
+  const {cart,setCart} = useContext(CartContext);
+  
   const toggle = () => setIsOpen(!isOpen);
 
   useEffect(()=>{
-    console.log(token['jwt-token'], "token");
-  },[token]);
+    if(token['jwt-token']){
+      const tokenData = jwtDecode(token['jwt-token']);
+      setUser(tokenData);
+    // console.log(tokenData.user,"user");
+    }
+  },[])
+
   return (
     <div>
       <Navbar {...args}>
@@ -42,13 +53,17 @@ function Header(args) {
                 Options
               </DropdownToggle>
               <DropdownMenu right>
-                <DropdownItem>Cart</DropdownItem>
+                {user&&<DropdownItem>Cart {cart.products.length}</DropdownItem>}
                 <DropdownItem>Setting</DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>
                   {
                     token['jwt-token']?
-                      <Link onClick={()=>removeToken('jwt-token')} to="/signin">
+                      <Link onClick={()=>{
+                        removeToken('jwt-token');
+                        setUser(null);
+                        setCart({products:[]})
+                        }} to="/signin">
                         Logout
                       </Link>
                       :
@@ -61,7 +76,7 @@ function Header(args) {
               </DropdownMenu>
             </UncontrolledDropdown>
           </Nav>
-          <NavbarText>Username</NavbarText>
+          {user&&<NavbarText>{user.user}</NavbarText>}
         </Collapse>
       </Navbar>
     </div>
