@@ -4,7 +4,6 @@ import './Auth.css';
 import axios from 'axios';
 import { useContext, useRef } from 'react';
 import { sigin } from '../../APIs/fakeStoreProdApis';
-import Cookies from 'js-cookie';
 import { useCookies } from 'react-cookie';
 import { jwtDecode } from 'jwt-decode';
 import UserContext from '../../context/UserContext';
@@ -18,13 +17,18 @@ function Login() {
 
     async function onAuthFormSubmit(formDetails){
         try {
+        
             const response = await axios.post(sigin(),{
                 username : formDetails.username,
                 email : formDetails.email,
                 password : formDetails.password
+            },{
+                withCredentials:true
             });
-
-            setToken('jwt-token',response.data.token);   
+            const tkn = response.data.token;
+            console.log('tkn',tkn);
+            setToken('jwt-token',response.data.token,{httpOnly:true}); 
+            // console.log(response.data.token,"token on login");  
             const tokenDetails = jwtDecode(response.data.token);
             setUser({user : tokenDetails.user, id : tokenDetails.id });
 

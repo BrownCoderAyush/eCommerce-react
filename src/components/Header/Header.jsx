@@ -12,6 +12,7 @@ import {
   NavbarText,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie' 
 
 // css imports 
 import './Header.css';
@@ -23,17 +24,34 @@ import CartContext from '../../context/CartContext';
 
 function Header(args) {
   const [isOpen, setIsOpen] = useState(false);
-  const [token,setToken,removeToken] = useCookies(['jwt-token']);
+  const [token,removeToken] = useCookies(['jwt-token']);
   const {user,setUser} = useContext(UserContext);
   const {cart,setCart} = useContext(CartContext);
-  
-  const toggle = () => setIsOpen(!isOpen);
 
+ 
+
+  function logout() {
+    // removeToken('jwt-token', {httpOnly: true , path:'/'});
+    // axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/logout`, {withCredentials: true});
+    setCart({products:[]})
+    setUser(null);
+    removeToken('jwt-token',{httpOnly: true});
+  }
+
+  const toggle = () => setIsOpen(!isOpen);
+  useEffect(()=>{
+    // debugger
+    
+    if(token['jwt-token'])console.log("jwt-token present in cookie");
+  })
+  
   useEffect(()=>{
     if(token['jwt-token']){
+      console.log('jwt-token hereaaaa');
+      console.log(token['jwt-token'],'jwt-token here');
       const tokenData = jwtDecode(token['jwt-token']);
       setUser(tokenData);
-    // console.log(tokenData.user,"user");
+      // console.log(tokenData.user,"user");
     }
   },[])
 
@@ -60,9 +78,7 @@ function Header(args) {
                   {
                     token['jwt-token']?
                       <Link onClick={()=>{
-                        removeToken('jwt-token');
-                        setUser(null);
-                        setCart({products:[]})
+                        logout();
                         }} to="/signin">
                         Logout
                       </Link>

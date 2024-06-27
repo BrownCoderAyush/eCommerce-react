@@ -34,7 +34,6 @@ function Signup() {
                 <h4 className="text-center">SignUp</h4>
                 <Auth 
                     onSubmit={handleOnSubmit}
-                    resetSignUpForm={resetSignUpForm}
                 />
                 <div className="signup-btn text-center" id="showSignupBtn">
                     <Link to="/signin"> 
