@@ -27,11 +27,9 @@ function Login() {
             });
             const tkn = response.data.token;
             console.log('tkn',tkn);
-            setToken('jwt-token',response.data.token,{httpOnly:true}); 
-            // console.log(response.data.token,"token on login");  
-            const tokenDetails = jwtDecode(response.data.token);
-            setUser({user : tokenDetails.user, id : tokenDetails.id });
-
+            const tokenDetails = jwtDecode(tkn);
+            setUser({username : tokenDetails.user, id : tokenDetails.id });
+            setToken('jwt-token',response.data.token,{httpOnly:true});   
             navigator('/');
 
         } catch (error) {

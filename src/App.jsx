@@ -24,6 +24,7 @@ function App() {
       console.log(res.data.token , "getting this in res")
       if(res.data.token){
         const tokenDetails = jwtDecode(res.data.token);
+        console.log(tokenDetails,"token details ")
         setUser({username: tokenDetails.user, id: tokenDetails.id});
       }
     }); 
@@ -31,7 +32,10 @@ function App() {
   
   useEffect(() => {
     accessToken();
+    // window.location.reload();
   }, [])
+
+
   return (
     <UserContext.Provider value={{user,setUser}}>
       <CartContext.Provider value={{cart,setCart}}>

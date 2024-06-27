@@ -11,7 +11,7 @@ import {
   DropdownItem,
   NavbarText,
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie' 
 
 // css imports 
@@ -20,30 +20,42 @@ import { useCookies } from 'react-cookie';
 import UserContext from '../../context/UserContext';
 import { jwtDecode } from 'jwt-decode';
 import CartContext from '../../context/CartContext';
-
+import axios from 'axios';
 
 function Header(args) {
   const [isOpen, setIsOpen] = useState(false);
   const [token,removeToken] = useCookies(['jwt-token']);
   const {user,setUser} = useContext(UserContext);
   const {cart,setCart} = useContext(CartContext);
-
+  const navigator = useNavigate();
  
 
   function logout() {
-    // removeToken('jwt-token', {httpOnly: true , path:'/'});
-    // axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/logout`, {withCredentials: true});
+    console.log("insdie logout");
+    removeToken('jwt-token', {httpOnly: true , path:'/'});
+    console.log(token,'token after logout');
+    // removeToken('jwt-token',{httpOnly: true});
+    axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/logout`, {withCredentials: true});
     setCart({products:[]})
     setUser(null);
-    removeToken('jwt-token',{httpOnly: true});
+    navigator('/signin');
   }
 
   const toggle = () => setIsOpen(!isOpen);
+
+  const onClickHandler = ()=>{
+      if(token['jwt-token']){ logout()}
+      else{
+        navigator('/signin')
+      }
+  }
   useEffect(()=>{
     // debugger
-    
+    console.log(user);
     if(token['jwt-token'])console.log("jwt-token present in cookie");
   })
+
+
   
   useEffect(()=>{
     if(token['jwt-token']){
@@ -75,24 +87,31 @@ function Header(args) {
                 <DropdownItem>Setting</DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>
-                  {
+              
+                {user? <Link onClick={() => {
+                  // debugger
+                    console.log("logging out");
+                    logout();
+                  }} to="/signin">Logout</Link> : <Link to="/signin">SignIn</Link>}
+                  {/* {
                     token['jwt-token']?
-                      <Link onClick={()=>{
+                      <button onClick={()=>{
+                        console.log("here logout option");
                         logout();
-                        }} to="/signin">
+                        }}>
                         Logout
-                      </Link>
+                      </button>
                       :
-                      <Link to="/signin">
+                      <button onClick={()=>navigator('/signup')}>
                         SignIn
-                      </Link>
-                  }
+                      </button>
+                  } */}
                   
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
           </Nav>
-          {user&&<NavbarText>{user.user}</NavbarText>}
+          {user&&<NavbarText>{user.username}</NavbarText>}
         </Collapse>
       </Navbar>
     </div>
