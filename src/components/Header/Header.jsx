@@ -21,50 +21,32 @@ import UserContext from '../../context/UserContext';
 import { jwtDecode } from 'jwt-decode';
 import CartContext from '../../context/CartContext';
 import axios from 'axios';
+import useCart from '../../hooks/useCart';
 
 function Header(args) {
   const [isOpen, setIsOpen] = useState(false);
   const [token,removeToken] = useCookies(['jwt-token']);
   const {user,setUser} = useContext(UserContext);
   const {cart,setCart} = useContext(CartContext);
-  const navigator = useNavigate();
- 
+  const {fetchUserCart} = useCart();
 
   function logout() {
-    console.log("insdie logout");
     removeToken('jwt-token', {httpOnly: true , path:'/'});
-    console.log(token,'token after logout');
-    // removeToken('jwt-token',{httpOnly: true});
     axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/logout`, {withCredentials: true});
-    setCart({products:[]})
+    setCart(null);
     setUser(null);
-    navigator('/signin');
   }
-
-  const toggle = () => setIsOpen(!isOpen);
-
-  const onClickHandler = ()=>{
-      if(token['jwt-token']){ logout()}
-      else{
-        navigator('/signin')
-      }
-  }
-  useEffect(()=>{
-    // debugger
-    console.log(user);
-    if(token['jwt-token'])console.log("jwt-token present in cookie");
-  })
-
+ const toggle = () => setIsOpen(!isOpen);
 
   
   useEffect(()=>{
-    if(token['jwt-token']){
-      console.log('jwt-token hereaaaa');
-      console.log(token['jwt-token'],'jwt-token here');
-      const tokenData = jwtDecode(token['jwt-token']);
-      setUser(tokenData);
-      // console.log(tokenData.user,"user");
-    }
+    axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/accesstoken`, {withCredentials: true})
+    .then(async(res) => {
+      if(res.data.token){
+        const tokenDetails = jwtDecode(res.data.token);
+        fetchUserCart(tokenDetails.id);
+      }
+    }); 
   },[])
 
   return (
@@ -83,30 +65,15 @@ function Header(args) {
                 Options
               </DropdownToggle>
               <DropdownMenu right>
-                {user&&<DropdownItem>Cart {cart.products.length}</DropdownItem>}
+                {user&&<DropdownItem><Link  style={{ textDecoration: 'none' , color:'#3c4043'}} to={`/cart/${user.id}`}>Cart {cart&&cart.products&&cart.products.length}</Link></DropdownItem>}
                 <DropdownItem>Setting</DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>
               
                 {user? <Link onClick={() => {
                   // debugger
-                    console.log("logging out");
                     logout();
                   }} to="/signin">Logout</Link> : <Link to="/signin">SignIn</Link>}
-                  {/* {
-                    token['jwt-token']?
-                      <button onClick={()=>{
-                        console.log("here logout option");
-                        logout();
-                        }}>
-                        Logout
-                      </button>
-                      :
-                      <button onClick={()=>navigator('/signup')}>
-                        SignIn
-                      </button>
-                  } */}
-                  
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>

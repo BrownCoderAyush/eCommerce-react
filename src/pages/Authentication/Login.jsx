@@ -7,6 +7,7 @@ import { sigin } from '../../APIs/fakeStoreProdApis';
 import { useCookies } from 'react-cookie';
 import { jwtDecode } from 'jwt-decode';
 import UserContext from '../../context/UserContext';
+import useCart from '../../hooks/useCart';
 
 function Login() {
 
@@ -14,6 +15,8 @@ function Login() {
     const navigator = useNavigate();
     const [token, setToken] = useCookies(['jwt-token']);
     const{user,setUser}=useContext(UserContext);
+    const {fetchUserCart} = useCart();
+
 
     async function onAuthFormSubmit(formDetails){
         try {
@@ -29,7 +32,8 @@ function Login() {
             console.log('tkn',tkn);
             const tokenDetails = jwtDecode(tkn);
             setUser({username : tokenDetails.user, id : tokenDetails.id });
-            setToken('jwt-token',response.data.token,{httpOnly:true});   
+            setToken('jwt-token',response.data.token,{httpOnly:true}); 
+            fetchUserCart(tokenDetails.id);
             navigator('/');
 
         } catch (error) {

@@ -5,6 +5,7 @@ import ProductList from "../pages/ProductList/ProductList";
 import ProductDetails from "../components/ProductDetails/ProductDetails";
 import Login from "../pages/Authentication/Login";
 import Signup from "../pages/Authentication/Signup";
+import Cart from "../pages/Cart/Cart";
 
 function MainRoutes(){
 
@@ -16,6 +17,7 @@ function MainRoutes(){
             <Route path="/signin" element={<Login/>}/>
             <Route path="/signup" element={<Signup/>}/>
             <Route path="*" element={<Error/>}/>
+            <Route path="/cart/:userId" element={<Cart/>}/>
         </Routes>
     )   
 

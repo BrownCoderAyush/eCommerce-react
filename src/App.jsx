@@ -11,15 +11,15 @@ import CartContext from './context/CartContext'
 import axios from 'axios'
 import { useCookies } from 'react-cookie'
 import { jwtDecode } from "jwt-decode";
+
 function App() {
 
   const [user,setUser]=useState(null);
-  const [cart,setCart]=useState({products:[]});
+  const [cart,setCart]=useState();
   const [token,setToken,removeToken] = useCookies(['jwt-token']);
-  
   function accessToken() {
     axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/accesstoken`, {withCredentials: true})
-    .then((res) => {
+    .then(async(res) => {
       setToken('jwt-token', res.data.token, {httpOnly: true});
       console.log(res.data.token , "getting this in res")
       if(res.data.token){
@@ -32,14 +32,13 @@ function App() {
   
   useEffect(() => {
     accessToken();
-    // window.location.reload();
   }, [])
 
 
   return (
     <UserContext.Provider value={{user,setUser}}>
       <CartContext.Provider value={{cart,setCart}}>
-      <div>    
+      <main>    
     {/* Common header for all pages  */}
       <Header 
           color='light' 
@@ -52,7 +51,7 @@ function App() {
       <MainRoutes/>
     {/* Common footer for all pages */}
       <Footer/>
-      </div>
+      </main>
       </CartContext.Provider>
     </UserContext.Provider>
   )
