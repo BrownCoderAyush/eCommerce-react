@@ -4,12 +4,29 @@ import "./Cart.css";
 import axios from "axios";
 import CartContext from "../../context/CartContext";
 import Loader from "../../components/Loader/Loader";
-import { getProductDetailsById } from "../../APIs/fakeStoreProdApis";
+import { getProductDetailsById, updateProductInCart } from "../../APIs/fakeStoreProdApis";
+import UserContext from "../../context/UserContext";
 
 function  Cart(){
     const {cart,setCart} = useContext(CartContext);
+    const {user}= useContext(UserContext);
     const [products,setProducts]=useState([]);
 
+    async function onProductUpdate(productId,quantity){
+        if(!user){
+            return;
+        }
+        const response = await axios.put(updateProductInCart(),{userId : user.id, productId ,quantity});
+        console.log(response.data.products,"products");
+        setCart({...response.data});
+
+        setProducts(response.data.products);
+    }
+
+
+    useEffect(()=>{
+        console.log(products.length,"cart");
+    },[cart,products])
     
 
     async function downloadProductDetails(){
@@ -23,15 +40,10 @@ function  Cart(){
         const downloadedProducts = productPromiseResponse.map((productDetails)=>{
             return {...productDetails.data,quantity:productQuantMapping[productDetails.data.id]}
         });
-        console.log(downloadedProducts,"dp");
         setProducts(downloadedProducts);
     }
 
     useEffect(()=>{
-        console.log(products,"pds");
-    },[products])
-    useEffect(()=>{
-        console.log(cart,"cart");
         if(cart && cart.products.length){
             downloadProductDetails();
         }
@@ -53,7 +65,15 @@ function  Cart(){
                        
                         <div className="order-details-title fw-bold">Order Details</div>
                         {
-                            products.length>0 && products.map((product)=><OrderDetailsProduct key={product.id} image={product.image} title={product.title} price={product.price} quantity={product.quantity}/>)
+                            products.length>0 && products.map((product)=><OrderDetailsProduct 
+                                    key={product.id} 
+                                    image={product.image} 
+                                    title={product.title} 
+                                    price={product.price} 
+                                    quantity={product.quantity}
+                                    onRemove={()=>onProductUpdate(product.id,0)}
+                                />
+                            )
                         }
                        
                         

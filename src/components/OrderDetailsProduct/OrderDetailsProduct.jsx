@@ -1,7 +1,11 @@
 import "./OrderDetailsProduct.css"
-function OrderDetailsProduct({ image, title, price, quantity }) {
+
+
+function OrderDetailsProduct({ image, title, price, quantity,onRemove }) {
+
 
     const quantityAvailable = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
     return (
         <>
             <div className="order-details-product d-flex flex-row">
@@ -14,8 +18,8 @@ function OrderDetailsProduct({ image, title, price, quantity }) {
                 </div>
                 <div className="order-details-product-actions d-flex flex-column"><div className="order-details-product-quantity">
                     <div className="fw-bold">Quantity</div>
-                        <div className="form-group"><select className="form-select">{quantityAvailable.map((id) => <option 
-                                                                                                                        selected={quantity == id} 
+                        <div className="form-group"><select defaultValue={quantity} className="form-select">{quantityAvailable.map((id) => <option 
+                                                                                                                        // selected={quantity == id} 
                                                                                                                         value={id} 
                                                                                                                         key={id}>{id}
                                                                                                                     </option>
@@ -23,7 +27,7 @@ function OrderDetailsProduct({ image, title, price, quantity }) {
                         </select>
                     </div>
                 </div>
-                    <button className="order-details-product-remove btn btn-danger">Remove</button></div>
+                    <button className="order-details-product-remove btn btn-danger" onClick={onRemove}>Remove</button></div>
 
             </div>
             <hr />
