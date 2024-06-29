@@ -11,28 +11,38 @@ import CartContext from './context/CartContext'
 import axios from 'axios'
 import { useCookies } from 'react-cookie'
 import { jwtDecode } from "jwt-decode";
+import { fetchUserCart } from './APIs/APIFetchFunctions'
+
 
 function App() {
 
   const [user,setUser]=useState(null);
-  const [cart,setCart]=useState();
+  const [cart,setCart]=useState(null);
   const [token,setToken,removeToken] = useCookies(['jwt-token']);
-  function accessToken() {
-    axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/accesstoken`, {withCredentials: true})
-    .then(async(res) => {
+  async function accessToken() {
+
+      const res = await axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/accesstoken`, {withCredentials: true})
       setToken('jwt-token', res.data.token, {httpOnly: true});
-      console.log(res.data.token , "getting this in res")
       if(res.data.token){
         const tokenDetails = jwtDecode(res.data.token);
-        console.log(tokenDetails,"token details ")
         setUser({username: tokenDetails.user, id: tokenDetails.id});
+        
       }
-    }); 
-  }
+    }; 
   
-  useEffect(() => {
-    accessToken();
-  }, [])
+  function load(){
+    if(!user){
+      accessToken();
+    }
+    if(user){
+      fetchUserCart(user.id,setCart);
+    }
+  }
+
+
+  useEffect(()=>{
+    load();
+  },[user]);
 
 
   return (
@@ -50,7 +60,7 @@ function App() {
     {/* router based rendering */}
       <MainRoutes/>
     {/* Common footer for all pages */}
-      <Footer/>
+      {/* <Footer/> */}
       </main>
       </CartContext.Provider>
     </UserContext.Provider>

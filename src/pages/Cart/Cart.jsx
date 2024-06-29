@@ -1,34 +1,61 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import OrderDetailsProduct from "../../components/OrderDetailsProduct/OrderDetailsProduct";
 import "./Cart.css";
-import { useParams } from "react-router-dom";
 import axios from "axios";
-import { getCartByUser } from "../../APIs/fakeStoreProdApis";
 import CartContext from "../../context/CartContext";
+import Loader from "../../components/Loader/Loader";
+import { getProductDetailsById } from "../../APIs/fakeStoreProdApis";
 
 function  Cart(){
-    const {userId} = useParams();
     const {cart,setCart} = useContext(CartContext);
-    async function fetchUserCart(userId){
-        const response = await axios.get(getCartByUser(userId));
-        setCart(response.data[0]);
+    const [products,setProducts]=useState([]);
+
+    
+
+    async function downloadProductDetails(){
+        const productQuantMapping = {};
+        cart.products.forEach(product => {
+            productQuantMapping[product.productId]=product.quantity;
+        });
+        const productsPromise = cart.products.map(product => axios.get(getProductDetailsById(product.productId)));
+        const productPromiseResponse = await axios.all(productsPromise);
+
+        const downloadedProducts = productPromiseResponse.map((productDetails)=>{
+            return {...productDetails.data,quantity:productQuantMapping[productDetails.data.id]}
+        });
+        console.log(downloadedProducts,"dp");
+        setProducts(downloadedProducts);
     }
+
     useEffect(()=>{
-        fetchUserCart(userId);
-    },[])
+        console.log(products,"pds");
+    },[products])
+    useEffect(()=>{
+        console.log(cart,"cart");
+        if(cart && cart.products.length){
+            downloadProductDetails();
+        }
+        
+    },[cart])
+
     return (
-        <div classNameName="cartPage">
+        <>
+        {
+            !cart && <Loader/>
+        }
+        <div className="cartPage">
             
-        <div className="container">
+        <div className="container ">
             <div className="row">
                 <h2 className="cart-title text-center">Your cart</h2>
                 <div className="cart-wrapper d-flex flex-row">
                     <div className="order-details d-flex flex-column" id="orderDetails">
                        
                         <div className="order-details-title fw-bold">Order Details</div>
-                        
-                        <OrderDetailsProduct/>
-                        <hr />       
+                        {
+                            products.length>0 && products.map((product)=><OrderDetailsProduct key={product.id} image={product.image} title={product.title} price={product.price} quantity={product.quantity}/>)
+                        }
+                       
                         
                     </div>
 
@@ -72,6 +99,7 @@ function  Cart(){
             </div>
         </div>
         </div>
+        </>
     )
 }
 export default Cart;

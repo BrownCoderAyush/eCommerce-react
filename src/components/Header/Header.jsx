@@ -22,13 +22,14 @@ import { jwtDecode } from 'jwt-decode';
 import CartContext from '../../context/CartContext';
 import axios from 'axios';
 import useCart from '../../hooks/useCart';
+import { fetchUserCart } from '../../APIs/APIFetchFunctions';
 
 function Header(args) {
   const [isOpen, setIsOpen] = useState(false);
   const [token,removeToken] = useCookies(['jwt-token']);
   const {user,setUser} = useContext(UserContext);
   const {cart,setCart} = useContext(CartContext);
-  const {fetchUserCart} = useCart();
+  // const {fetchUserCart} = useCart();
 
   function logout() {
     removeToken('jwt-token', {httpOnly: true , path:'/'});
@@ -39,15 +40,15 @@ function Header(args) {
  const toggle = () => setIsOpen(!isOpen);
 
   
-  useEffect(()=>{
-    axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/accesstoken`, {withCredentials: true})
-    .then(async(res) => {
-      if(res.data.token){
-        const tokenDetails = jwtDecode(res.data.token);
-        fetchUserCart(tokenDetails.id);
-      }
-    }); 
-  },[])
+  // useEffect(()=>{
+  //   axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/accesstoken`, {withCredentials: true})
+  //   .then(async(res) => {
+  //     if(res.data.token){
+  //       const tokenDetails = jwtDecode(res.data.token);
+  //       fetchUserCart(tokenDetails.id,setCart);
+  //     }
+  //   }); 
+  // },[])
 
   return (
     <div>
