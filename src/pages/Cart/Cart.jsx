@@ -6,6 +6,7 @@ import CartContext from "../../context/CartContext";
 import Loader from "../../components/Loader/Loader";
 import { getProductDetailsById, updateProductInCart } from "../../APIs/fakeStoreProdApis";
 import UserContext from "../../context/UserContext";
+import { Link } from "react-router-dom";
 
 function  Cart(){
     const {cart,setCart} = useContext(CartContext);
@@ -106,12 +107,12 @@ function  Cart(){
 
                         </div>
                         <div className="price-details-btn-group">
-                            <a href="productList.html" className="continue-shopping-btn btn btn-info text-decoration-none">
+                            <Link to="/products?category=" className="continue-shopping-btn btn btn-info text-decoration-none">
                                 Continue Shopping
-                            </a>
-                            <a href="checkout.html" className="checkout-btn btn btn-primary text-decoration-none">
+                            </Link>
+                            <Link to="/products?category=" className="checkout-btn btn btn-primary text-decoration-none">
                                 Checkout
-                            </a>
+                            </Link>
                         </div>
                         
                     </div>

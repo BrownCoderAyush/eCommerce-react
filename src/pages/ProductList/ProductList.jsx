@@ -17,16 +17,21 @@ function ProductList() {
         const downloadURL = (category=='')?
         getAllProducts():
         getAllProductsByCategory(category);
-
+        console.log(downloadURL,'dwnurl');
         const products = await axios.get(downloadURL);
+        console.log(products,"products");
         setProducts(products.data);
     }
 
     useEffect(() => {
         const category = searchParams.get('category');
         downloadAllProducts(category);
+        // console.log("here");
     },[searchParams.get('category')])
 
+    useEffect(()=>{
+        console.log("hello first time");
+    },[])
     return (
         <div className="container">
             <div className="row">
