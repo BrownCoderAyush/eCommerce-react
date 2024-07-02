@@ -1,16 +1,19 @@
-import { Link, useNavigate } from "react-router-dom";
-import Auth from "../../components/Auth/Auth";
-import { signUp } from '../../APIs/fakeStoreProdApis';
 import axios from "axios";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+// API Urls
+import { signUp } from '../../APIs/fakeStoreProdApis';
+
+//components
+import Auth from "../../components/Auth/Auth";
+
 function Signup() {
 
     const navigator = useNavigate();
-    const [resetSignUpForm,setResetSignUpForm ]= useState(false);
     async function handleOnSubmit(authArgs,resetForm){
         try {
-            
-            const response = await axios.post(signUp(),{
+            await axios.post(signUp(),{
                 username : authArgs.username,
                 email : authArgs.email,
                 password : authArgs.password

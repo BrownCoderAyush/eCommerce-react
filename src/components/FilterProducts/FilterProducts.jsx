@@ -1,12 +1,10 @@
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-import { useEffect, useState } from "react";
-import { getAllCategories, getAllProductsByCategory } from "../../APIs/fakeStoreProdApis";
+// custom hook imports 
+import useCategory from "../../hooks/useCategory";
 
 // css imports
 import "./FilterProducts.css";
-import useCategory from "../../hooks/useCategory";
-import { useNavigate } from "react-router-dom";
 
 function FilterProducts() {
     const minPriceOptions = [0,10,20,50,100,200];

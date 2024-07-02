@@ -1,10 +1,15 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import './ProductDetails.css';
-import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+
+//API URLs
 import { addProductToUserCart, getProductDetailsById } from '../../APIs/fakeStoreProdApis';
+//context imports 
 import CartContext from '../../context/CartContext';
 import UserContext from '../../context/UserContext';
+
+//css imports
+import './ProductDetails.css';
 
 function ProductDetails() {
     const { id } = useParams();
@@ -12,9 +17,9 @@ function ProductDetails() {
     const { user } = useContext(UserContext);
     const { setCart } = useContext(CartContext);
     const navigator = useNavigate();
+    
     async function downloadProduct() {
         const response = await axios.get(getProductDetailsById(id));
-        console.log(response.data);
         setProduct(response.data);
     }
 
@@ -46,7 +51,6 @@ function ProductDetails() {
 
                     <div className="product-details-box d-flex flex-column">
                         <div id="productDetails">
-                            {/* <!-- product details --> */}
                             <div className="product-name" id="product-name">{product.title}</div>
                             <div className="product-price fw-bold" id="product-price">Rs {product.price}</div>
                             <div className="product-description">

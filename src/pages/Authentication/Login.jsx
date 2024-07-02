@@ -1,20 +1,26 @@
-import { Link, useNavigate } from 'react-router-dom';
-import Auth from '../../components/Auth/Auth';
-import './Auth.css';
 import axios from 'axios';
-import { useContext, useRef } from 'react';
-import { sigin } from '../../APIs/fakeStoreProdApis';
-import { useCookies } from 'react-cookie';
 import { jwtDecode } from 'jwt-decode';
+import { useContext, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+//API Urls
+import { sigin } from '../../APIs/fakeStoreProdApis';
+import './Auth.css';
+
+//component imports 
+import Auth from '../../components/Auth/Auth';
+
+//context imports
 import UserContext from '../../context/UserContext';
+
+// custom hooks
 import useCart from '../../hooks/useCart';
 
 function Login() {
 
     const authRef = useRef(null);
     const navigator = useNavigate();
-    const [token, setToken] = useCookies(['jwt-token']);
-    const{user,setUser}=useContext(UserContext);
+    const{setUser}=useContext(UserContext);
     const {fetchUserCart} = useCart();
 
 
@@ -28,11 +34,9 @@ function Login() {
             },{
                 withCredentials:true
             });
-            const tkn = response.data.token;
-            console.log('tkn',tkn);
-            const tokenDetails = jwtDecode(tkn);
-            setUser({username : tokenDetails.user, id : tokenDetails.id });
-            setToken('jwt-token',response.data.token,{httpOnly:true}); 
+            const token = response.data.token;
+            const tokenDetails = jwtDecode(token);
+            setUser({username : tokenDetails.user, id : tokenDetails.id }); 
             fetchUserCart(tokenDetails.id);
             navigator('/');
 

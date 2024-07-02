@@ -1,12 +1,20 @@
-import { useContext, useEffect, useState } from "react";
-import OrderDetailsProduct from "../../components/OrderDetailsProduct/OrderDetailsProduct";
-import "./Cart.css";
 import axios from "axios";
-import CartContext from "../../context/CartContext";
-import Loader from "../../components/Loader/Loader";
-import { getProductDetailsById, updateProductInCart } from "../../APIs/fakeStoreProdApis";
-import UserContext from "../../context/UserContext";
 import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+
+// css imports
+import "./Cart.css";
+
+//component imports
+import Loader from "../../components/Loader/Loader";
+import OrderDetailsProduct from "../../components/OrderDetailsProduct/OrderDetailsProduct";
+
+// API urls
+import { getProductDetailsById, updateProductInCart } from "../../APIs/fakeStoreProdApis";
+
+//context
+import UserContext from "../../context/UserContext";
+import CartContext from "../../context/CartContext";
 
 function  Cart(){
     const {cart,setCart} = useContext(CartContext);
@@ -18,18 +26,10 @@ function  Cart(){
             return;
         }
         const response = await axios.put(updateProductInCart(),{userId : user.id, productId ,quantity});
-        console.log(response.data.products,"products");
         setCart({...response.data});
-
         setProducts(response.data.products);
     }
-
-
-    useEffect(()=>{
-        console.log(products.length,"cart");
-    },[cart,products])
     
-
     async function downloadProductDetails(){
         const productQuantMapping = {};
         cart.products.forEach(product => {
@@ -81,9 +81,7 @@ function  Cart(){
                     </div>
 
                     <div className="price-details d-flex flex-column" id="priceDetails">
-                        <div className="price-details-box">
-
-                            
+                        <div className="price-details-box">             
 
                             <div className="price-details-title fw-bold">Price Details</div>
                             <div className="price-details-data">

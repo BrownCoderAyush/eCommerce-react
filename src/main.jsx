@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.css'
-import { BrowserRouter } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
+import { BrowserRouter } from 'react-router-dom';
+
+// component imports
+import App from './App.jsx'
+
+//bootstrap css import
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+// css imports
+import './index.css'
 
 
 

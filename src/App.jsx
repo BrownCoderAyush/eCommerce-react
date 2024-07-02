@@ -1,16 +1,19 @@
-
+import axios from 'axios'
+import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from 'react'
-import './App.css'
-import Footer from './components/Footer/Footer'
-import Header from './components/Header/Header'
-import UserContext from './context/UserContext'
 
+// routes
 import MainRoutes from './routes/MainRoutes'
+
+//component imports
+import Header from './components/Header/Header'
+
+// context imports
+import UserContext from './context/UserContext'
 import CartContext from './context/CartContext'
 
-import axios from 'axios'
-import { useCookies } from 'react-cookie'
-import { jwtDecode } from "jwt-decode";
+
+// API URLs
 import { fetchUserCart } from './APIs/APIFetchFunctions'
 
 
@@ -18,11 +21,9 @@ function App() {
 
   const [user,setUser]=useState(null);
   const [cart,setCart]=useState(null);
-  const [token,setToken,removeToken] = useCookies(['jwt-token']);
   async function accessToken() {
 
       const res = await axios.get(`${import.meta.env.VITE_FAKE_STORE_URL}/accesstoken`, {withCredentials: true})
-      setToken('jwt-token', res.data.token, {httpOnly: true});
       if(res.data.token){
         const tokenDetails = jwtDecode(res.data.token);
         setUser({username: tokenDetails.user, id: tokenDetails.id});
@@ -59,8 +60,6 @@ function App() {
 
     {/* router based rendering */}
       <MainRoutes/>
-    {/* Common footer for all pages */}
-      {/* <Footer/> */}
       </main>
       </CartContext.Provider>
     </UserContext.Provider>
